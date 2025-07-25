@@ -230,9 +230,9 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 ">
+    <div className="min-h-screen pt-40 bg-gray-100 ">
       {/* Stylish Header */}
-      <div className="text-center mb-4 p-2 bg-gradient-to-r from-purple-600 to-blue-500  shadow-2xl transform transition-all duration-300 hover:scale-15">
+      <div className="fixed top-0 left-0 w-full text-center mb-4 p-2 bg-gradient-to-r from-purple-600 to-blue-500  shadow-2xl transform transition-all duration-300 hover:scale-15">
         <h1 className="text-5xl font-extrabold text-white mb-4 animate-pulse">
           Smart Finance Manager
         </h1>

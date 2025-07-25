@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom"; // Replace Link with useNavigate
 
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const navigate = useNavigate(); // Initialize navigate
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -13,8 +14,10 @@ const Login = () => {
       setError("Email and Password are required.");
       return;
     }
+
     console.log("Logging in with:", { username, password });
-    setError(""); // Clear errors on successful login
+    setError("");
+    navigate("/page"); // Redirect only after validation
   };
 
   return (
@@ -53,8 +56,7 @@ const Login = () => {
             type="submit"
             className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-300"
           >
-            <Link
-               to="/page"> Login </Link>
+            Login {/* Removed Link */}
           </button>
         </form>
 
