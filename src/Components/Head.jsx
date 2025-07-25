@@ -19,7 +19,7 @@ const Buttons = () => {
 
 const Header = () => {
   return (
-    <nav className="bg-gradient-to-r from-blue-500 to-purple-600 shadow-lg">
+    <nav className="fixed top-0 left-0 w-full bg-gradient-to-r from-blue-500 to-purple-600 shadow-lg z-50">
       <div className="container mx-auto px-6 py-4 flex items-center justify-between">
         <div className="flex items-center space-x-4">
           <img src="/vite.svg" alt="vite logo" className="w-10 h-10" />
