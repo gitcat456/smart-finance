@@ -1,12 +1,24 @@
-# React + Vite
+# Smart Finance Manager 💰
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A lightweight, responsive web app to help users track expenses, manage budgets, and monitor financial goals—all in one place.
 
-Currently, two official plugins are available:
+## 🚀 Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Add and categorize income & expenses
+- Visualize data with charts and summaries
+- Set and track savings goals
+- Simple, mobile-friendly UI
 
-## Expanding the ESLint configuration
+## 🛠️ Built With
 
-If you are developing a production application, we recommend using TypeScript and enable type-aware lint rules. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- React
+- Tailwind CSS
+- Axios
+
+## 📦 Getting Started
+
+```bash
+git clone https://github.com/gitcat456/smart-finance.git
+cd smart-finance
+npm install
+npm run dev
