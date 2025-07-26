@@ -12,7 +12,6 @@ import {
   Legend,
 } from 'chart.js';
 
-// Register Chart.js components
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -25,187 +24,237 @@ ChartJS.register(
 );
 
 const Charts = () => {
-  // Sample data
   const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
   const incomeData = [5000, 6000, 5500, 7000, 6500, 8000];
   const expensesData = [3000, 3500, 3200, 4000, 3800, 4200];
   const savingsData = [2000, 2500, 2300, 3000, 2700, 3800];
 
-  // Gradient function
   const createGradient = (ctx, color1, color2) => {
-    if (!ctx || !ctx.canvas) return color1; // Fallback if canvas context is not available
-    const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+    if (!ctx || !ctx.canvas) return color1;
+    const gradient = ctx.createLinearGradient(0, 0, 0, ctx.canvas.height);
     gradient.addColorStop(0, color1);
     gradient.addColorStop(1, color2);
     return gradient;
   };
 
-  // Income Chart Data (Blue to Violet)
-  const incomeChartData = {
-    labels: months,
-    datasets: [
-      {
-        label: 'Income',
-        data: incomeData,
-        borderColor: 'rgba(75, 192, 192, 1)',
-        backgroundColor: (context) => {
-          const chart = context.chart;
-          const { ctx } = chart;
-          return createGradient(ctx, 'rgba(59, 130, 246, 0.8)', 'rgba(139, 92, 246, 0.8)'); // Blue to Violet
-        },
-        fill: true,
-        tension: 0.4,
-      },
-    ],
-  };
-
-  // Expenses Chart Data (Red to Orange)
-  const expensesChartData = {
-    labels: months,
-    datasets: [
-      {
-        label: 'Expenses',
-        data: expensesData,
-        borderColor: 'rgba(255, 99, 132, 1)',
-        backgroundColor: (context) => {
-          const chart = context.chart;
-          const { ctx } = chart;
-          return createGradient(ctx, 'rgba(239, 68, 68, 0.8)', 'rgba(249, 115, 22, 0.8)'); // Red to Orange
-        },
-        fill: true,
-        tension: 0.4,
-      },
-    ],
-  };
-
-  // Savings/Investments Chart Data (Green to Teal)
-  const savingsChartData = {
-    labels: months,
-    datasets: [
-      {
-        label: 'Savings/Investments',
-        data: savingsData,
-        borderColor: 'rgba(153, 102, 255, 1)',
-        backgroundColor: (context) => {
-          const chart = context.chart;
-          const { ctx } = chart;
-          return createGradient(ctx, 'rgba(16, 185, 129, 0.8)', 'rgba(20, 184, 166, 0.8)'); // Green to Teal
-        },
-        fill: true,
-        tension: 0.4,
-      },
-    ],
-  };
-
-  // Trends Chart Data (Integrated with Unique Gradients)
-  const trendsChartData = {
-    labels: months,
-    datasets: [
-      {
-        label: 'Income',
-        data: incomeData,
-        borderColor: 'rgba(59, 130, 246, 1)', // Blue
-        backgroundColor: (context) => {
-          const chart = context.chart;
-          const { ctx } = chart;
-          return createGradient(ctx, 'rgba(59, 130, 246, 0.6)', 'rgba(139, 92, 246, 0.6)'); // Blue to Violet
-        },
-        fill: true,
-        tension: 0.4,
-      },
-      {
-        label: 'Expenses',
-        data: expensesData,
-        borderColor: 'rgba(239, 68, 68, 1)', // Red
-        backgroundColor: (context) => {
-          const chart = context.chart;
-          const { ctx } = chart;
-          return createGradient(ctx, 'rgba(239, 68, 68, 0.6)', 'rgba(249, 115, 22, 0.6)'); // Red to Orange
-        },
-        fill: true,
-        tension: 0.4,
-      },
-      {
-        label: 'Savings/Investments',
-        data: savingsData,
-        borderColor: 'rgba(16, 185, 129, 1)', // Green
-        backgroundColor: (context) => {
-          const chart = context.chart;
-          const { ctx } = chart;
-          return createGradient(ctx, 'rgba(16, 185, 129, 0.6)', 'rgba(20, 184, 166, 0.6)'); // Green to Teal
-        },
-        fill: true,
-        tension: 0.4,
-      },
-    ],
-  };
-
-  // Chart options
-  const chartOptions = {
+  const baseOptions = {
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
       legend: {
         position: 'top',
         labels: {
-          color: '#4B5563', // Gray-600
+          color: '#374151',
           font: {
-            size: 14,
-            weight: '500',
+            size: 12,
+            weight: '600',
           },
-        },
+          padding: 20,
+          usePointStyle: true,
+          pointStyle: 'circle'
+        }
       },
-      title: {
-        display: true,
-        text: 'Financial Trends',
-        color: '#1F2937', // Gray-800
-        font: {
-          size: 18,
-          weight: 'bold',
+      tooltip: {
+        backgroundColor: '#1F2937',
+        titleFont: {
+          size: 14,
+          weight: '600'
         },
-      },
+        bodyFont: {
+          size: 12
+        },
+        padding: 12,
+        usePointStyle: true,
+        cornerRadius: 8
+      }
     },
     scales: {
       x: {
         grid: {
           display: false,
+          drawBorder: false
         },
         ticks: {
-          color: '#6B7280', // Gray-500
-        },
+          color: '#6B7280'
+        }
       },
       y: {
         grid: {
-          color: '#E5E7EB', // Gray-200
+          color: '#E5E7EB',
+          drawBorder: false
         },
         ticks: {
-          color: '#6B7280', // Gray-500
-        },
-      },
+          color: '#6B7280',
+          callback: (value) => `$${value}`
+        }
+      }
     },
+    elements: {
+      point: {
+        radius: 4,
+        hoverRadius: 6,
+        backgroundColor: '#FFFFFF',
+        borderWidth: 2
+      },
+      line: {
+        tension: 0.3,
+        borderWidth: 2
+      },
+      bar: {
+        borderRadius: 6,
+        borderSkipped: 'bottom'
+      }
+    }
   };
 
+  const charts = [
+    {
+      type: 'line',
+      title: 'Monthly Income',
+      data: {
+        labels: months,
+        datasets: [{
+          label: 'Income',
+          data: incomeData,
+          borderColor: '#3B82F6',
+          backgroundColor: (ctx) => createGradient(ctx.chart.ctx, 'rgba(59, 130, 246, 0.2)', 'rgba(59, 130, 246, 0.05)'),
+          fill: true
+        }]
+      },
+      options: {
+        ...baseOptions,
+        plugins: {
+          ...baseOptions.plugins,
+          title: {
+            display: true,
+            text: 'Monthly Income',
+            color: '#111827',
+            font: {
+              size: 16,
+              weight: '700'
+            }
+          }
+        }
+      }
+    },
+    {
+      type: 'bar',
+      title: 'Monthly Expenses',
+      data: {
+        labels: months,
+        datasets: [{
+          label: 'Expenses',
+          data: expensesData,
+          backgroundColor: (ctx) => createGradient(ctx.chart.ctx, '#EC4899', '#F97316'),
+          borderColor: (ctx) => createGradient(ctx.chart.ctx, '#EC4899', '#F97316'),
+          borderWidth: 0
+        }]
+      },
+      options: {
+        ...baseOptions,
+        plugins: {
+          ...baseOptions.plugins,
+          title: {
+            display: true,
+            text: 'Monthly Expenses',
+            color: '#111827',
+            font: {
+              size: 16,
+              weight: '700'
+            }
+          }
+        }
+      }
+    },
+    {
+      type: 'line',
+      title: 'Savings & Investments',
+      data: {
+        labels: months,
+        datasets: [{
+          label: 'Savings',
+          data: savingsData,
+          borderColor: '#10B981',
+          backgroundColor: (ctx) => createGradient(ctx.chart.ctx, 'rgba(16, 185, 129, 0.2)', 'rgba(16, 185, 129, 0.05)'),
+          fill: true
+        }]
+      },
+      options: {
+        ...baseOptions,
+        plugins: {
+          ...baseOptions.plugins,
+          title: {
+            display: true,
+            text: 'Savings & Investments',
+            color: '#111827',
+            font: {
+              size: 16,
+              weight: '700'
+            }
+          }
+        }
+      }
+    },
+    {
+      type: 'line',
+      title: 'Financial Overview',
+      data: {
+        labels: months,
+        datasets: [
+          {
+            label: 'Income',
+            data: incomeData,
+            borderColor: '#3B82F6',
+            backgroundColor: 'transparent'
+          },
+          {
+            label: 'Expenses',
+            data: expensesData,
+            borderColor: '#EC4899',
+            backgroundColor: 'transparent'
+          },
+          {
+            label: 'Savings',
+            data: savingsData,
+            borderColor: '#10B981',
+            backgroundColor: 'transparent'
+          }
+        ]
+      },
+      options: {
+        ...baseOptions,
+        plugins: {
+          ...baseOptions.plugins,
+          title: {
+            display: true,
+            text: 'Financial Overview',
+            color: '#111827',
+            font: {
+              size: 16,
+              weight: '700'
+            }
+          }
+        }
+      }
+    }
+  ];
+
   return (
-    <div className="space-y-8 p-6">
-      {/* Income Chart */}
-      <div className="h-96">
-        <Line data={incomeChartData} options={chartOptions} />
-      </div>
-
-      {/* Expenses Chart */}
-      <div className="h-96">
-        <Bar data={expensesChartData} options={chartOptions} />
-      </div>
-
-      {/* Savings/Investments Chart */}
-      <div className="h-96">
-        <Line data={savingsChartData} options={chartOptions} />
-      </div>
-
-      {/* Trends Chart */}
-      <div className="h-96">
-        <Line data={trendsChartData} options={chartOptions} />
-      </div>
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 p-6 bg-gray-50 rounded-xl">
+      {charts.map((chart, index) => (
+        <div key={index} className="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow">
+          <div className="h-80">
+            {chart.type === 'line' ? (
+              <Line data={chart.data} options={chart.options} />
+            ) : (
+              <Bar data={chart.data} options={chart.options} />
+            )}
+          </div>
+          <div className="mt-4 text-center">
+            <h3 className="text-lg font-semibold text-gray-800">{chart.title}</h3>
+          </div>
+        </div>
+      ))}
     </div>
   );
 };

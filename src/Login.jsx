@@ -8,6 +8,7 @@ const Login = () => {
   const navigate = useNavigate(); // Initialize navigate
 
   const handleSubmit = (e) => {
+    
     e.preventDefault();
 
     if (!username || !password) {
