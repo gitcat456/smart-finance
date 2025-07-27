@@ -1,360 +1,224 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import Charts from "./assets/charts";
 
+const categoryConfig = {
+  Finance: {
+    fields: [
+      { label: "Salary", key: "salary", icon: "💵" },
+      { label: "Bonus", key: "bonus", icon: "🎁" },
+      { label: "Commission", key: "commission", icon: "📊" },
+      { label: "Side Hustle", key: "sideHustle", icon: "🚀" },
+      { label: "Farming Income", key: "farmingIncome", icon: "🌱" },
+      { label: "Other Income", key: "otherIncome", icon: "✨" },
+    ],
+    gradient: "from-emerald-500 to-teal-600",
+    icon: "💰",
+  },
+  Housing: {
+    fields: [
+      { label: "Rent/Mortgage", key: "rent", icon: "🏠" },
+      { label: "Phone/Internet", key: "phone", icon: "📱" },
+      { label: "Electricity", key: "electricity", icon: "💡" },
+      { label: "Cooking Gas", key: "cookingGas", icon: "🔥" },
+      { label: "Water", key: "water", icon: "💧" },
+      { label: "Other 1", key: "other1", icon: "📌" },
+      { label: "Other 2", key: "other2", icon: "📌" },
+    ],
+    gradient: "from-blue-500 to-indigo-600",
+    icon: "🏡",
+  },
+  Food: {
+    fields: [
+      { label: "Groceries", key: "groceries", icon: "🛒" },
+      { label: "Lunch", key: "lunch", icon: "🍱" },
+      { label: "Dining Out", key: "foodShopping", icon: "🍽️" },
+      { label: "Other", key: "other", icon: "✨" },
+    ],
+    gradient: "from-amber-500 to-orange-600",
+    icon: "🍎",
+  },
+  Transportation: {
+    fields: [
+      { label: "Parking Fees", key: "parkingFees", icon: "🅿️" },
+      { label: "Bus/Taxi Fare", key: "busTaxiFare", icon: "🚌" },
+      { label: "Car Insurance", key: "carInsurance", icon: "📄" },
+      { label: "Car Wash", key: "carWash", icon: "🚗" },
+      { label: "Fuel", key: "fuel", icon: "⛽" },
+      { label: "Maintenance", key: "maintenance", icon: "🔧" },
+      { label: "Other", key: "other", icon: "✨" },
+    ],
+    gradient: "from-rose-500 to-pink-600",
+    icon: "🚕",
+  },
+};
 
 export default function App() {
   const [selectedCategory, setSelectedCategory] = useState(null);
-
-  // State for each category's data
-  const [financeData, setFinanceData] = useState({
-    salary: "",
-    bonus: "",
-    commission: "",
-    sideHustle: "",
-    farmingIncome: "",
-    otherIncome: "",
+  const [formData, setFormData] = useState(() => {
+    const initialData = {};
+    Object.keys(categoryConfig).forEach(category => {
+      categoryConfig[category].fields.forEach(field => {
+        initialData[`${category}_${field.key}`] = "";
+      });
+    });
+    return initialData;
   });
 
-  const [housingData, setHousingData] = useState({
-    rent: "",
-    phone: "",
-    electricity: "",
-    cookingGas: "",
-    water: "",
-    other1: "",
-    other2: "",
-    other3: "",
-    other4: "",
-    other5: "",
-  });
-
-  const [foodData, setFoodData] = useState({
-    groceries: "",
-    lunch: "",
-    foodShopping: "",
-    other: "",
-  });
-
-  const [transportationData, setTransportationData] = useState({
-    parkingFees: "",
-    busTaxiFare: "",
-    carInsurance: "",
-    carWash: "",
-    fuel: "",
-    maintenance: "",
-    other: "",
-  });
-
-  // Function to handle card click
   const handleCardClick = (category) => {
     setSelectedCategory(category);
   };
 
-  // Function to go back to the cards view
   const handleBackClick = () => {
     setSelectedCategory(null);
   };
 
-  // Function to calculate total for a category
-  const calculateTotal = (data) => {
-    return Object.values(data).reduce((total, value) => total + (parseFloat(value) || 0), 0);
+  const handleInputChange = (category, key, value) => {
+    setFormData({
+      ...formData,
+      [`${category}_${key}`]: value,
+    });
   };
 
-  // Detailed views for each category
-  const renderDetails = () => {
-    const categories = {
-      Finance: {
-        data: financeData,
-        setData: setFinanceData,
-        fields: [
-          { label: "Salary", key: "salary" },
-          { label: "Bonus", key: "bonus" },
-          { label: "Commission", key: "commission" },
-          { label: "Side Hustle", key: "sideHustle" },
-          { label: "Income from Farming Projects", key: "farmingIncome" },
-          { label: "Other Income", key: "otherIncome" },
-        ],
-        gradient: "from-green-500 to-teal-600",
-        icon: (
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-8 w-8 mr-2"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v1m0-1a1 1 0 011-1h1a1 1 0 011 1v1a1 1 0 01-1 1h-1a1 1 0 01-1-1zm-6 8a1 1 0 011-1h1a1 1 0 011 1v1a1 1 0 01-1 1H7a1 1 0 01-1-1z"
-            />
-          </svg>
-        ),
-      },
-      Housing: {
-        data: housingData,
-        setData: setHousingData,
-        fields: [
-          { label: "Mortgage or Rent", key: "rent" },
-          { label: "Phone/Airtime/Credit Card", key: "phone" },
-          { label: "Electricity Bill/Tokens", key: "electricity" },
-          { label: "Cooking Gas/Charcoal", key: "cookingGas" },
-          { label: "Water", key: "water" },
-          { label: "Other 1", key: "other1" },
-          { label: "Other 2", key: "other2" },
-          { label: "Other 3", key: "other3" },
-          { label: "Other 4", key: "other4" },
-          { label: "Other 5", key: "other5" },
-        ],
-        gradient: "from-blue-500 to-purple-600",
-        icon: (
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-8 w-8 mr-2"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
-            />
-          </svg>
-        ),
-      },
-      Food: {
-        data: foodData,
-        setData: setFoodData,
-        fields: [
-          { label: "Groceries", key: "groceries" },
-          { label: "Lunch", key: "lunch" },
-          { label: "Food Shopping", key: "foodShopping" },
-          { label: "Other", key: "other" },
-        ],
-        gradient: "from-yellow-500 to-orange-600",
-        icon: (
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-8 w-8 mr-2"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v1m0-1a1 1 0 011-1h1a1 1 0 011 1v1a1 1 0 01-1 1h-1a1 1 0 01-1-1zm-6 8a1 1 0 011-1h1a1 1 0 011 1v1a1 1 0 01-1 1H7a1 1 0 01-1-1z"
-            />
-          </svg>
-        ),
-      },
-      Transportation: {
-        data: transportationData,
-        setData: setTransportationData,
-        fields: [
-          { label: "County Parking Fees", key: "parkingFees" },
-          { label: "Bus/Taxi Fare", key: "busTaxiFare" },
-          { label: "Car Insurance", key: "carInsurance" },
-          { label: "Car Wash", key: "carWash" },
-          { label: "Fuel", key: "fuel" },
-          { label: "Maintenance", key: "maintenance" },
-          { label: "Other", key: "other" },
-        ],
-        gradient: "from-pink-500 to-red-600",
-        icon: (
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-8 w-8 mr-2"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v1m0-1a1 1 0 011-1h1a1 1 0 011 1v1a1 1 0 01-1 1h-1a1 1 0 01-1-1zm-6 8a1 1 0 011-1h1a1 1 0 011 1v1a1 1 0 01-1 1H7a1 1 0 01-1-1z"
-            />
-          </svg>
-        ),
-      },
-    };
+  const calculateTotal = (category) => {
+    return categoryConfig[category].fields.reduce((total, field) => {
+      const value = parseFloat(formData[`${category}_${field.key}`]) || 0;
+      return total + value;
+    }, 0);
+  };
 
-    const category = categories[selectedCategory];
-    if (!category) return null;
+  const renderCategoryDetails = () => {
+    const category = categoryConfig[selectedCategory];
+    const total = calculateTotal(selectedCategory);
 
     return (
-      <div className="p-9 min-h-screen flex flex-col justify-between">
-        <div className={`bg-gradient-to-br ${category.gradient} p-5 rounded-lg shadow-lg text-white`}>
-          <h2 className="text-center text-3xl font-bold mb-6"> {selectedCategory}</h2>
-          <div className="space-y-4">
-            {category.fields.map((field) => (
-              <div key={field.key} className="bg-gradient-to-br from-blue-700 to-blue-500 p-4 rounded-lg backdrop-blur-sm  hover:scale-105 transform transition-all duration-400 cursor-pointer">
-                <label className="block text-sm font-medium">{field.label}:</label>
-                <input
-                  type="number"
-                  value={category.data[field.key]}
-                  onChange={(e) =>
-                    category.setData({ ...category.data, [field.key]: e.target.value })
-                  }
-                  className="mt-1 block w-full px-3 py-2 bg-white/20 border border-white/30 rounded-md text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-white focus:border-white"
-                  placeholder="Enter amount"
-                />
-              </div>
-            ))}
-            <div className="bg-white/10 p-4 rounded-lg backdrop-blur-sm">
-              <div className="text-lg font-bold">
-                Total: Ksh{calculateTotal(category.data).toFixed(2)}
-              </div>
-            </div>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -20 }}
+        transition={{ duration: 0.3 }}
+        className={`min-h-screen p-6 bg-gradient-to-br ${category.gradient} text-white`}
+      >
+        <div className="max-w-2xl mx-auto">
+          <div className="flex justify-between items-center mb-8">
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={handleBackClick}
+              className="px-4 py-2 bg-white/20 rounded-lg backdrop-blur-sm flex items-center gap-2"
+            >
+              <span>←</span> Back
+            </motion.button>
+            <h1 className="text-3xl font-bold">{selectedCategory}</h1>
+            <div className="text-2xl">{category.icon}</div>
           </div>
-        </div>
 
-        {/* Back to Categories Button at the Bottom */}
-        <div className="p-8">
-          <button
-            onClick={handleBackClick}
-            className="w-full px-4 py-2 bg-blue text-gray-800 rounded-lg hover:bg-gray-100 transition-colors"
+          <div className="space-y-4 mb-8">
+            {category.fields.map((field) => (
+              <motion.div
+                key={field.key}
+                whileHover={{ scale: 1.02 }}
+                className="bg-white/10 p-4 rounded-xl backdrop-blur-sm"
+              >
+                <label className="text-sm font-medium mb-1 flex items-center gap-2">
+                  <span className="text-lg">{field.icon}</span>
+                  {field.label}
+                </label>
+                <div className="flex items-center">
+                  <span className="mr-2">Ksh</span>
+                  <input
+                    type="number"
+                    value={formData[`${selectedCategory}_${field.key}`]}
+                    onChange={(e) =>
+                      handleInputChange(selectedCategory, field.key, e.target.value)
+                    }
+                    className="flex-1 px-3 py-2 bg-white/20 border border-white/30 rounded-md focus:outline-none focus:ring-2 focus:ring-white"
+                    placeholder="0.00"
+                  />
+                </div>
+              </motion.div>
+            ))}
+          </div>
+
+          <motion.div
+            initial={{ scale: 0.9 }}
+            animate={{ scale: 1 }}
+            className="bg-white/20 p-6 rounded-xl backdrop-blur-sm text-center"
           >
-            ← Back to Categories
-          </button>
+            <div className="text-xl font-semibold mb-2">Total</div>
+            <div className="text-4xl font-bold">Ksh {total.toFixed(2)}</div>
+          </motion.div>
         </div>
-      </div>
+      </motion.div>
     );
   };
 
-  return (
-    <div className="min-h-screen bg-gray-100 ">
-    {/* Stylish Header */}
-<div className="text-center mb-4 p-2 bg-gradient-to-r from-purple-600 to-blue-500  shadow-2xl transform transition-all duration-300 hover:scale-15">
-  <h1 className="text-5xl font-extrabold text-white mb-4 animate-pulse">
-    Smart Finance Manager
-  </h1>
-  <p className="text-xl text-white/90 font-medium animate-bounce">
-    Take control of your finances with ease and style.
-  </p>
- 
-</div>
-
-      {selectedCategory ? (
-        renderDetails()
-      ) : (
-        <div className="p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {/* Card 1: Housing */}
-          <div
-            onClick={() => handleCardClick("Housing")}
-            className="bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg shadow-lg p-6 text-white hover:scale-105 transform transition-all duration-300 cursor-pointer"
+  const renderCategoryCards = () => (
+    <div className="p-6">
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="max-w-6xl mx-auto"
+      >
+        <div className="text-center mb-12">
+          <motion.h1 
+            initial={{ y: -20 }}
+            animate={{ y: 0 }}
+            className="text-4xl font-bold text-gray-800 mb-4"
           >
-            <div className="flex items-center mb-4">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-8 w-8 mr-2"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
-                />
-              </svg>
-              <h2 className="text-xl font-semibold">Housing</h2>
-            </div>
-            <p className="text-sm opacity-90">
-              Manage your housing expenses and track your budget.
-            </p>
-          </div>
-
-          {/* Card 2: Finance */}
-          <div
-            onClick={() => handleCardClick("Finance")}
-            className="bg-gradient-to-br from-green-500 to-teal-600 rounded-lg shadow-lg p-6 text-white hover:scale-105 transform transition-all duration-300 cursor-pointer"
+            Smart Finance Manager
+          </motion.h1>
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.2 }}
+            className="text-xl text-gray-600"
           >
-            <div className="flex items-center mb-4">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-8 w-8 mr-2"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v1m0-1a1 1 0 011-1h1a1 1 0 011 1v1a1 1 0 01-1 1h-1a1 1 0 01-1-1zm-6 8a1 1 0 011-1h1a1 1 0 011 1v1a1 1 0 01-1 1H7a1 1 0 01-1-1z"
-                />
-              </svg>
-              <h2 className="text-xl font-semibold">Finance</h2>
-            </div>
-            <p className="text-sm opacity-90">
-              Track your income and manage your finances.
-            </p>
-          </div>
+            Track your expenses and income effortlessly
+          </motion.p>
+        </div>
 
-          {/* Card 3: Food */}
-          <div
-            onClick={() => handleCardClick("Food")}
-            className="bg-gradient-to-br from-yellow-500 to-orange-600 rounded-lg shadow-lg p-6 text-white hover:scale-105 transform transition-all duration-300 cursor-pointer"
-          >
-            <div className="flex items-center mb-4">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-8 w-8 mr-2"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v1m0-1a1 1 0 011-1h1a1 1 0 011 1v1a1 1 0 01-1 1h-1a1 1 0 01-1-1zm-6 8a1 1 0 011-1h1a1 1 0 011 1v1a1 1 0 01-1 1H7a1 1 0 01-1-1z"
-                />
-              </svg>
-              <h2 className="text-xl font-semibold">Food</h2>
-            </div>
-            <p className="text-sm opacity-90">
-              Track your food expenses and manage your budget.
-            </p>
-          </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {Object.entries(categoryConfig).map(([category, config]) => (
+            <motion.div
+              key={category}
+              whileHover={{ y: -5, boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1)" }}
+              whileTap={{ scale: 0.98 }}
+              onClick={() => handleCardClick(category)}
+              className={`bg-gradient-to-br ${config.gradient} rounded-xl p-6 text-white cursor-pointer`}
+            >
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-xl font-semibold">{category}</h2>
+                <div className="text-3xl">{config.icon}</div>
+              </div>
+              <p className="text-sm opacity-90">
+                {category === "Finance" 
+                  ? "Track your income sources" 
+                  : `Manage your ${category.toLowerCase()} expenses`}
+              </p>
+              <div className="mt-4 text-xs opacity-80">
+                {calculateTotal(category) > 0 ? (
+                  <span>Saved: Ksh {calculateTotal(category).toFixed(2)}</span>
+                ) : (
+                  <span>Click to add data</span>
+                )}
+              </div>
+            </motion.div>
+          ))}
+        </div>
 
-          {/* Card 4: Transportation */}
-          <div
-            onClick={() => handleCardClick("Transportation")}
-            className="bg-gradient-to-br from-pink-500 to-red-600 rounded-lg shadow-lg p-6 text-white hover:scale-105 transform transition-all duration-300 cursor-pointer"
-          >
-            <div className="flex items-center mb-4">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-8 w-8 mr-2"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v1m0-1a1 1 0 011-1h1a1 1 0 011 1v1a1 1 0 01-1 1h-1a1 1 0 01-1-1zm-6 8a1 1 0 011-1h1a1 1 0 011 1v1a1 1 0 01-1 1H7a1 1 0 01-1-1z"
-                />
-              </svg>
-              <h2 className="text-xl font-semibold">Transportation</h2>
-            </div>
-            <p className="text-sm opacity-90">
-              Track your transportation expenses and manage your budget.
-            </p>
-          </div>
+        <div className="mt-12">
           <Charts />
         </div>
-      )}
+      </motion.div>
     </div>
+  );
 
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <AnimatePresence mode="wait">
+        {selectedCategory ? renderCategoryDetails() : renderCategoryCards()}
+      </AnimatePresence>
+    </div>
   );
 }
