@@ -1,25 +1,25 @@
 import { useState } from "react";
 
-const ToggleBar = ({ onToggle }) => {
+const ToggleBar = ({ children, onToggle }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleToggle = () => {
     const newState = !isOpen;
     setIsOpen(newState);
-    onToggle(newState);
+    onToggle && onToggle(newState);
   };
 
   return (
-    <div className="flex justify-center mb-4">
-      <button
-        onClick={handleToggle}
-        className={`relative px-6 py-2.5 font-medium rounded-full shadow-sm transition-all duration-300 ${
-          isOpen
-            ? 'bg-gradient-to-r from-blue-600 to-teal-500 text-white shadow-md'
-            : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
-        }`}
-      >
-        <span className="flex items-center justify-center gap-2">
+    <div className="relative">
+      <div className="flex justify-center mb-2">
+        <button
+          onClick={handleToggle}
+          className={`relative z-10 px-6 py-2.5 font-medium rounded-full shadow-sm transition-all duration-300 flex items-center gap-2 ${
+            isOpen
+              ? 'bg-gradient-to-r from-blue-600 to-teal-500 text-white shadow-md'
+              : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
+          }`}
+        >
           {isOpen ? (
             <>
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -35,8 +35,17 @@ const ToggleBar = ({ onToggle }) => {
               Show Categories
             </>
           )}
-        </span>
-      </button>
+        </button>
+      </div>
+      
+      {/* Dropdown content */}
+      <div className={`transition-all duration-300 ease-in-out overflow-hidden ${
+        isOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+      }`}>
+        <div className="bg-white rounded-lg shadow-md p-4 border border-gray-100">
+          {children}
+        </div>
+      </div>
     </div>
   );
 };
